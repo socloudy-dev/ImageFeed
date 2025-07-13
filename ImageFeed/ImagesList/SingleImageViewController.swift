@@ -15,8 +15,8 @@ final class SingleImageViewController: UIViewController {
     
     //MARK: - IBOutlets
     
-    @IBOutlet weak var scrollViewOfSingleImage: UIScrollView!
-    @IBOutlet weak var backwardButton: UIButton!
+    @IBOutlet private weak var scrollViewOfSingleImage: UIScrollView!
+    @IBOutlet private weak var backwardButton: UIButton!
     @IBOutlet private var singleImage: UIImageView!
     
     //MARK: - Lifecycle
@@ -42,8 +42,8 @@ final class SingleImageViewController: UIViewController {
         view.layoutIfNeeded()
         let visibleRectSize = scrollViewOfSingleImage.bounds.size
         let imageSize = image.size
-        let hScale = visibleRectSize.width / imageSize.width
-        let vScale = visibleRectSize.height / imageSize.height
+        let hScale = imageSize.width != 0 ? visibleRectSize.width / imageSize.width : 1
+        let vScale = imageSize.height != 0 ? visibleRectSize.height / imageSize.height : 1
         let scale = min(maxZoomScale, max(minZoomScale, max(hScale, vScale)))
         scrollViewOfSingleImage.setZoomScale(scale, animated: false)
         scrollViewOfSingleImage.layoutIfNeeded()

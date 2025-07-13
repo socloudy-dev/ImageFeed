@@ -13,6 +13,7 @@ final class ProfileViewController: UIViewController {
         let label = UILabel()
         label.text = "Екатерина Новикова"
         label.font = UIFont.boldSystemFont(ofSize: 23)
+        label.textColor = UIColor(named: "YP White")
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -28,6 +29,7 @@ final class ProfileViewController: UIViewController {
         let label = UILabel()
         label.text = "Hello, world!"
         label.font = UIFont.systemFont(ofSize: 13)
+        label.textColor = UIColor(named: "YP White")
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
