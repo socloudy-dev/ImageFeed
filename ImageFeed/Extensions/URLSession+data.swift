@@ -31,10 +31,10 @@ extension URLSession {
                 }
             } else if let error = error {
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
-                ("‼️ URL Request error: \(error)")
+                print("‼️ URL Request error: \(error)")
             } else {
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
-                ("‼️ URL Session error: \(error)")
+                print("‼️ URL Session error: \(error)")
             }
         })
         

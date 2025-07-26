@@ -42,7 +42,7 @@ final class OAuth2Service {
                     let decoder = JSONDecoder()
                     let tokenStorage = OAuth2TokenStorage.shared
                     let body = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                    let token = body.access_token
+                    let token = body.accessToken
                     tokenStorage.store(receivedToken: token)
                     completion(.success(token))
                 } catch {
