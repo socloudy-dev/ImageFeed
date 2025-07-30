@@ -27,18 +27,55 @@ extension URLSession {
                     fulfillCompletionOnTheMainThread(.success(data))
                 } else {
                     fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
-                    print("⚠️ Error with http status code: \(statusCode)")
+                    print("⚠️[URLSession/data]: Error with http status code: \(statusCode)")
                 }
             } else if let error = error {
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
-                print("‼️ URL Request error: \(error)")
-            } else {
+                print("‼️[URLSession/data]: URL Request error: \(error)")
+            } else if let error = error {
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
-                print("‼️ URL Session error: \(error)")
+                print("‼️[URLSession/data]: URL Session error: \(error)")
             }
         })
         
         return task
     }
 }
+
+extension URLSession {
+    func objectTask<T: Decodable>(
+        for request: URLRequest,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) -> URLSessionTask {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+        let task = data(for: request) { (result: Result<Data, Error>) in
+            switch result {
+            case .success(let data):
+                if let jsonString = String(data: data, encoding: .utf8) {
+                    print("✅[URLSession/objectTask]: Received data: \(jsonString)")
+                }
+                do {
+                    let decodedObject = try decoder.decode(T.self, from: data)
+                    completion(.success(decodedObject))
+                } catch {
+                    if let decodingError = error as? DecodingError {
+                        print("‼️[URLSession/objectTask]: Decoding error: \(decodingError), Data: \(String(data: data, encoding: .utf8) ?? "")")
+                    } else {
+                        print("‼️[URLSession/objectTask]: Decoding error: \(error.localizedDescription), Data: \(String(data: data, encoding: .utf8) ?? "")")
+                    }
+                    completion(.failure(error))
+                }
+
+            case .failure(let error):
+                print("‼️[URLSession/objectTask]: Request error: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }
+
+        return task
+    }
+}
+
 

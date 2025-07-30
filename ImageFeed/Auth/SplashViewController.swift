@@ -5,6 +5,8 @@ final class SplashViewController: UIViewController {
     //MARK: Properties
     
     private let storage = OAuth2TokenStorage.shared
+    private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     
     //MARK: Lifecycle
@@ -12,8 +14,9 @@ final class SplashViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if storage.token != nil {
+        if let token = storage.token {
             switchToTabBarController()
+            fetchProfile(token: token)
         } else {
             performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
         }
@@ -27,7 +30,7 @@ final class SplashViewController: UIViewController {
                 let navigationController = segue.destination as? UINavigationController,
                 let viewController = navigationController.viewControllers.first as? AuthViewController
             else {
-                assertionFailure("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)")
+                assertionFailure("‼️[SplashViewController]: Failed to prepare for \(showAuthenticationScreenSegueIdentifier)")
                 return
             }
             viewController.delegate = self
@@ -40,7 +43,7 @@ final class SplashViewController: UIViewController {
     
     func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration")
+            assertionFailure("‼️[SplashViewController/switchToTabBarController]: Invalid window configuration")
             return
         }
         
@@ -54,6 +57,31 @@ extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController, with code: String) {
         vc.dismiss(animated: true)
         
-        switchToTabBarController()
+        guard let token = storage.token else {
+            print("⚠️[SplashViewController/didAuthenticate]: Token is empty. Profile can't be downloaded.")
+            return
+        }
+        
+        fetchProfile(token: token)
+    }
+    
+    private func fetchProfile(token: String) {
+        UIBlockingProgressHUD.show()
+        profileService.fetchProfile(token) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self = self else { return }
+            
+            switch result {
+            case let .success(profile):
+                profileImageService.fetchProfileImageURL(username: profile.username) { _ in }
+                self.switchToTabBarController()
+                
+            case let .failure(error):
+                // TODO [Sprint 11] Покажите ошибку получения профиля
+                print("‼️[SplashViewController/fetchProfile]: Error when called fetchProfile function")
+                break
+            }
+        }
     }
 }

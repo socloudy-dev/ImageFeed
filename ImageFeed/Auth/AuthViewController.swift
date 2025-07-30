@@ -32,7 +32,7 @@ final class AuthViewController: UIViewController {
             guard
                 let webViewViewController = segue.destination as? WebViewViewController
             else {
-                assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
+                assertionFailure("‼️[AuthViewController]: Failed to prepare for \(showWebViewSegueIdentifier)")
                 return
             }
             webViewViewController.delegate = self
@@ -53,19 +53,20 @@ extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         vc.dismiss(animated: true)
         
-        ProgressHUD.animate()
+        UIBlockingProgressHUD.show()
         
         OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
             guard let self = self else { return }
             
-            ProgressHUD.dismiss()
+            UIBlockingProgressHUD.dismiss()
             
             switch result {
             case .success(let token):
-                print("✅ Token received: \(token)")
+                print("✅[AuthViewController/webViewViewController]: Token received: \(token)")
                 self.delegate?.didAuthenticate(self, with: code)
             case .failure(let error):
-                print("‼️ Error when getting token: \(error)")
+                print("‼️[AuthViewController/webViewViewController]: Error when getting token: \(error)")
+                self.showAuthErrorAlert()
             }
         }
     }
@@ -75,3 +76,15 @@ extension AuthViewController: WebViewViewControllerDelegate {
     }
 }
 
+extension AuthViewController {
+    func showAuthErrorAlert() {
+        let alertController = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+        let okAction = UIAlertAction(title: "Ок", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
+    }
+}
