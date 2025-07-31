@@ -64,6 +64,7 @@ final class OAuth2Service {
                     let tokenStorage = OAuth2TokenStorage.shared
                     let authToken = body.accessToken
                     tokenStorage.store(receivedToken: authToken)
+                    print("✅[OAuth2Service/fetchOAuthToken]: Token: \(authToken)")
                     completion(.success(authToken))
 
                     self.task = nil

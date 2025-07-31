@@ -2,6 +2,7 @@ import UIKit
 
 struct Profile {
     let username: String
+    let name: String
     let loginName: String
     let bio: String?
 }
@@ -45,7 +46,8 @@ final class ProfileService {
             switch result {
             case .success(let result):
                 let profile = Profile(
-                    username: "\(result.firstName) \(result.lastName)"
+                    username: "\(result.username)",
+                    name: "\(result.firstName) \(result.lastName)"
                         .trimmingCharacters(in: .whitespaces),
                     loginName: "@\(result.username)",
                     bio: result.bio

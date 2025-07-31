@@ -46,10 +46,10 @@ final class ProfileImageService {
             switch result {
             case .success(let result):
                 guard let self = self else { return }
-                self.avatarURL = result.profileImage.small
-                completion(.success(result.profileImage.small))
-                
-                postNotification(with: result.profileImage.small)
+                self.avatarURL = result.profileImage.large
+                completion(.success(result.profileImage.large))
+                print("✅ Image URL: \(result.profileImage.large)")
+                postNotification(with: result.profileImage.large)
 
             case .failure(let error):
                 print("‼️[ProfileImageService/fetchProfileImageURL]: Error when getting profile image URLs: \(error.localizedDescription)")

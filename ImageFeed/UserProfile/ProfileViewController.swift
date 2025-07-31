@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -70,6 +71,7 @@ final class ProfileViewController: UIViewController {
                 guard let self = self else { return }
                 self.updateAvatar()
             }
+        
         updateAvatar()
         
         setupProfileViews()
@@ -110,7 +112,7 @@ final class ProfileViewController: UIViewController {
     //MARK: - Setup Methods
     
     private func updateProfileDetails(with profile: Profile) {
-        nameLabel.text = profile.username.isEmpty ? "Имя не указано" : profile.username
+        nameLabel.text = profile.name.isEmpty ? "Имя не указано" : profile.name
         nicknameLabel.text = profile.loginName.isEmpty ? "@неизвестный_пользователь" : profile.loginName
         descriptionLabel.text = (profile.bio?.isEmpty ?? true) ? "Профиль не заполнен" : profile.bio
     }
@@ -120,7 +122,36 @@ final class ProfileViewController: UIViewController {
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
-        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
+        
+        let placeholderImage = UIImage(systemName: "person.circle.fill")?
+            .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
+            .withConfiguration(UIImage.SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        profileImageView.kf.indicatorType = .activity
+        profileImageView.kf.setImage(
+            with: url,
+            placeholder: placeholderImage,
+            options: [
+                .processor(processor),
+                .scaleFactor(UIScreen.main.scale),
+                .cacheOriginalImage,
+                .forceRefresh
+            ]) { result in
+                
+                switch result {
+                case .success(let value):
+                    print(value.image)
+                    print(value.cacheType)
+                    
+                    // Информация об источнике.
+                    print(value.source)
+                    
+                    // В случае ошибки
+                case .failure(let error):
+                    print(error)
+                }
+            }
     }
     
     //MARK: - Actions

@@ -15,7 +15,8 @@ final class SplashViewController: UIViewController {
         super.viewDidAppear(animated)
         
         if let token = storage.token {
-            switchToTabBarController()
+            print("✅[SplashViewController/viewDidAppear]: Token: \(token)")
+            
             fetchProfile(token: token)
         } else {
             performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
@@ -80,6 +81,7 @@ extension SplashViewController: AuthViewControllerDelegate {
             case let .failure(error):
                 // TODO [Sprint 11] Покажите ошибку получения профиля
                 print("‼️[SplashViewController/fetchProfile]: Error when called fetchProfile function")
+                self.switchToTabBarController() //Временное решение прокинуть на tabBar даже если выпала ошибка
                 break
             }
         }
