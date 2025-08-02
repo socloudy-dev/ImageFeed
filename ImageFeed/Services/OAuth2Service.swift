@@ -14,6 +14,15 @@ final class OAuth2Service {
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     private var lastCode: String?
+    private let tokenStorage = OAuth2TokenStorage.shared
+    private(set) var authToken: String? {
+        get {
+            return tokenStorage.token
+        }
+        set {
+            tokenStorage.token = newValue
+        }
+    }
     
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") else {
@@ -61,10 +70,9 @@ final class OAuth2Service {
 
                 switch result {
                 case .success(let body):
-                    let tokenStorage = OAuth2TokenStorage.shared
                     let authToken = body.accessToken
-                    tokenStorage.store(receivedToken: authToken)
-                    print("✅[OAuth2Service/fetchOAuthToken]: Token: \(authToken)")
+                    self.authToken = authToken
+                    print("✅[OAuth2Service/fetchOAuthToken]: Token received")
                     completion(.success(authToken))
 
                     self.task = nil

@@ -62,7 +62,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             
             switch result {
             case .success(let token):
-                print("✅[AuthViewController/webViewViewController]: Token received: \(token)")
+                print("✅[AuthViewController/webViewViewController]: Token received.")
                 self.delegate?.didAuthenticate(self, with: code)
             case .failure(let error):
                 print("‼️[AuthViewController/webViewViewController]: Error when getting token: \(error)")
