@@ -19,20 +19,4 @@ final class OAuth2TokenStorage {
             }
         }
     }
-    /*
-    private let storage: UserDefaults = .standard
-    private let tokenKey: String = "OAuthToken"
-    
-    var token: String? {
-        get {
-            return storage.string(forKey: tokenKey)
-        } set {
-            storage.set(newValue, forKey: tokenKey)
-        }
-    }
-    
-    func store(receivedToken: String) {
-        token = receivedToken
-    }
-     */
 }

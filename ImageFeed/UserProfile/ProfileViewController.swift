@@ -78,17 +78,16 @@ final class ProfileViewController: UIViewController {
         setupProfileConstraints()
     }
     
-    //MARK: - Setup Views
+    //MARK: - Setup ViewController Apperance
     
     private func setupProfileViews() {
+        view.backgroundColor = UIColor(named: "YP Black")
         view.addSubview(profileImageView)
         view.addSubview(nameLabel)
         view.addSubview(nicknameLabel)
         view.addSubview(descriptionLabel)
         view.addSubview(logoutButton)
     }
-    
-    //MARK: - Setup Constraints
     
     private func setupProfileConstraints() {
         profileImageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
@@ -121,7 +120,10 @@ final class ProfileViewController: UIViewController {
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
-        else { return }
+        else {
+            print("‼️[ProfileViewController/updateAvatar]: Guard for image URL failed! URL is nil.")
+            return
+        }
         
         let placeholderImage = UIImage(systemName: "person.circle.fill")?
             .withTintColor(.lightGray, renderingMode: .alwaysOriginal)

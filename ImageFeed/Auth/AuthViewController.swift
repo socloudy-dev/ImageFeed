@@ -61,7 +61,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             UIBlockingProgressHUD.dismiss()
             
             switch result {
-            case .success(let token):
+            case .success:
                 print("✅[AuthViewController/webViewViewController]: Token received.")
                 self.delegate?.didAuthenticate(self, with: code)
             case .failure(let error):

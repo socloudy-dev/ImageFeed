@@ -67,5 +67,7 @@ final class ProfileImageService {
                 name: ProfileImageService.didChangeNotification,
                 object: self,
                 userInfo: ["URL": profileImageURL])
+        
+    print("📤[ProfileImageService/postNotification]: Notification posted.")
     }
 }
