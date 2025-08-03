@@ -2,7 +2,7 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
@@ -14,7 +14,7 @@ final class SplashViewController: UIViewController {
         return imageView
     }()
     
-    //MARK: - Lifecycle
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +35,7 @@ final class SplashViewController: UIViewController {
         }
     }
     
-    //MARK: - Setup ViewController Apperance
+    // MARK: - Setup ViewController Apperance
     
     private func setupSplashViews() {
         view.backgroundColor = UIColor(named: "YP Black")
@@ -48,7 +48,7 @@ final class SplashViewController: UIViewController {
         splashImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         splashImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
-    //MARK: - Setup Methods
+    // MARK: - Setup Methods
     
     func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {

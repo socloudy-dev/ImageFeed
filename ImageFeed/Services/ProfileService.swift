@@ -9,18 +9,18 @@ struct Profile {
 
 final class ProfileService {
     
-    //MARK: - Singleton
+    // MARK: - Singleton
     
     static let shared = ProfileService()
     private init() {}
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private var task: URLSessionTask?
     private let urlSession = URLSession.shared
     private(set) var profile: Profile?
     
-    //MARK: - Setup Methods
+    // MARK: - Setup Methods
     
     private func makeProfileRequest(token: String) -> URLRequest? {
         guard let url = URL(string: "https://api.unsplash.com/me") else {
@@ -47,12 +47,11 @@ final class ProfileService {
             case .success(let result):
                 let profile = Profile(
                     username: "\(result.username)",
-                    name: "\(result.firstName) \(result.lastName)"
-                        .trimmingCharacters(in: .whitespaces),
+                    name: [result.firstName, result.lastName].compactMap { $0 }.joined(separator: " "),
                     loginName: "@\(result.username)",
                     bio: result.bio
                 )
-            
+                
                 self?.profile = profile
                 completion(.success(profile))
             case .failure(let error):

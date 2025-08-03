@@ -11,18 +11,18 @@ enum WebViewConstants {
 }
 
 final class WebViewViewController: UIViewController {
-    //MARK: - Properties
+    // MARK: - Properties
     
     weak var delegate: WebViewViewControllerDelegate?
     
     private var estimatedProgressObservation: NSKeyValueObservation?
     
-    //MARK: - IBOutlets
+    // MARK: - IBOutlets
     
     @IBOutlet weak var webView: WKWebView!
     @IBOutlet weak var progressView: UIProgressView!
     
-    //MARK: - Lifecycle
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,42 +36,42 @@ final class WebViewViewController: UIViewController {
                  guard let self = self else { return }
                  self.updateProgress()
              })
-    
-    loadAuthView()
-    updateProgress()
-}
-
-//MARK: - Setup Methods
-
-private func loadAuthView() {
-    guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-        print("‼️[WebViewViewController/loadAuthView]: URL components error (loadAuthView)")
-        return
+        
+        loadAuthView()
+        updateProgress()
     }
     
-    urlComponents.queryItems = [
-        URLQueryItem(name: "client_id", value: Constants.accessKey),
-        URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-        URLQueryItem(name: "response_type", value: "code"),
-        URLQueryItem(name: "scope", value: Constants.accessScope)
-    ]
+    // MARK: - Setup Methods
     
-    guard let url = urlComponents.url else {
-        print("‼️[WebViewViewController/loadAuthView]: URL error (loadAuthView)")
-        return
+    private func loadAuthView() {
+        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
+            print("‼️[WebViewViewController/loadAuthView]: URL components error (loadAuthView)")
+            return
+        }
+        
+        urlComponents.queryItems = [
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+            URLQueryItem(name: "response_type", value: "code"),
+            URLQueryItem(name: "scope", value: Constants.accessScope)
+        ]
+        
+        guard let url = urlComponents.url else {
+            print("‼️[WebViewViewController/loadAuthView]: URL error (loadAuthView)")
+            return
+        }
+        
+        let request = URLRequest(url: url)
+        webView.load(request)
     }
     
-    let request = URLRequest(url: url)
-    webView.load(request)
+    private func updateProgress() {
+        progressView.progress = Float(webView.estimatedProgress)
+        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    }
 }
 
-private func updateProgress() {
-    progressView.progress = Float(webView.estimatedProgress)
-    progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
-}
-}
-
-//MARK: - WebViewViewController Extensions
+// MARK: - WebViewViewController Extensions
 
 extension WebViewViewController: WKNavigationDelegate {
     func webView(

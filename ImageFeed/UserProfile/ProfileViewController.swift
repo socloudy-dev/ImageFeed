@@ -3,7 +3,7 @@ import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "UserPhoto"))
@@ -53,7 +53,7 @@ final class ProfileViewController: UIViewController {
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
-    //MARK: - LifeCycle
+    // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,7 +78,7 @@ final class ProfileViewController: UIViewController {
         setupProfileConstraints()
     }
     
-    //MARK: - Setup ViewController Apperance
+    // MARK: - Setup ViewController Apperance
     
     private func setupProfileViews() {
         view.backgroundColor = UIColor(named: "YP Black")
@@ -108,7 +108,7 @@ final class ProfileViewController: UIViewController {
         logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
     }
     
-    //MARK: - Setup Methods
+    // MARK: - Setup Methods
     
     private func updateProfileDetails(with profile: Profile) {
         nameLabel.text = profile.name.isEmpty ? "Имя не указано" : profile.name
@@ -156,7 +156,7 @@ final class ProfileViewController: UIViewController {
             }
     }
     
-    //MARK: - Actions
+    // MARK: - Actions
     
     @objc private func logoutButtonTapped() {
         print("Logout button tapped!")

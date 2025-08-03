@@ -2,11 +2,11 @@ import UIKit
 
 final class ProfileImageService {
     
-    //MARK: - Singleton
+    // MARK: - Singleton
     static let shared = ProfileImageService()
     private init() {}
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private(set) var avatarURL: String?
     private var task: URLSessionTask?
@@ -15,7 +15,7 @@ final class ProfileImageService {
     
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
-    //MARK: - Setup Methods
+    // MARK: - Setup Methods
     
     private func makeProfileImageRequest(username: String, token: String) -> URLRequest? {
         guard let url = URL(string: "https://api.unsplash.com/users/\(username)") else {
@@ -50,15 +50,15 @@ final class ProfileImageService {
                 completion(.success(result.profileImage.large))
                 print("✅ Image URL: \(result.profileImage.large)")
                 postNotification(with: result.profileImage.large)
-
+                
             case .failure(let error):
                 print("‼️[ProfileImageService/fetchProfileImageURL]: Error when getting profile image URLs: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
-
-                self.task = task
-                task.resume()
+        
+        self.task = task
+        task.resume()
     }
     
     func postNotification(with profileImageURL: String) {
@@ -68,6 +68,6 @@ final class ProfileImageService {
                 object: self,
                 userInfo: ["URL": profileImageURL])
         
-    print("📤[ProfileImageService/postNotification]: Notification posted.")
+        print("📤[ProfileImageService/postNotification]: Notification posted.")
     }
 }

@@ -2,10 +2,10 @@ import UIKit
 
 final class ImagesListViewController: UIViewController {
     
-    //MARK: - IBOutlets
+    // MARK: - IBOutlets
     @IBOutlet private var imageListTableView: UITableView!
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private let photosName: [String] = Array(0..<20).map{ "\($0)"}
     private let imageInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
@@ -18,7 +18,7 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    //MARK: - LifeCycle
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -28,7 +28,7 @@ final class ImagesListViewController: UIViewController {
     
     
     
-    //MARK: - Setup Methods
+    // MARK: - Setup Methods
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showSingleImageSegueIdentifier {
@@ -48,7 +48,7 @@ final class ImagesListViewController: UIViewController {
     }
 }
 
-//MARK: - ViewController Extensions
+// MARK: - ViewController Extensions
 
 extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {

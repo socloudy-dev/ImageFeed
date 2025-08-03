@@ -4,12 +4,12 @@ import Foundation
 
 final class OAuth2Service {
     
-    //MARK: Singleton
+    // MARK: - Singleton
     
     static let shared = OAuth2Service()
     private init() {}
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
@@ -67,21 +67,21 @@ final class OAuth2Service {
             DispatchQueue.main.async {
                 UIBlockingProgressHUD.dismiss()
                 guard let self = self else { return }
-
+                
                 switch result {
                 case .success(let body):
                     let authToken = body.accessToken
                     self.authToken = authToken
                     print("✅[OAuth2Service/fetchOAuthToken]: Token received")
                     completion(.success(authToken))
-
+                    
                     self.task = nil
                     self.lastCode = nil
-
+                    
                 case .failure(let error):
                     print("‼️[OAuth2Service/fetchOAuthToken]: Request error: \(error.localizedDescription)")
                     completion(.failure(error))
-
+                    
                     self.task = nil
                     self.lastCode = nil
                 }
