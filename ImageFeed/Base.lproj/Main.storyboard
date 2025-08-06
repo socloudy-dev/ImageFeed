@@ -58,6 +58,9 @@
                                                     <color key="tintColor" name="YP Red"/>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="Like Button Off"/>
+                                                    <connections>
+                                                        <action selector="likeButtonClicked" destination="SE4-A7-frr" eventType="touchUpInside" id="XW5-Hg-CtS"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>

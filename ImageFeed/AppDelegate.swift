@@ -1,11 +1,17 @@
 import UIKit
+import ProgressHUD
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        guard
+            let ypBlack = UIColor(named: "YP Black"),
+            let ypWhite = UIColor(named: "YP White")
+        else { return true }
+        ProgressHUD.animationType = .activityIndicator
+        ProgressHUD.colorHUD = ypWhite
+        ProgressHUD.colorAnimation = ypBlack
         return true
     }
 

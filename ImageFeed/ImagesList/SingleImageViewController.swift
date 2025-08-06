@@ -13,6 +13,8 @@ final class SingleImageViewController: UIViewController {
         }
     }
     
+    var largeImageURL: String = ""
+    
     // MARK: - IBOutlets
     
     @IBOutlet private weak var scrollViewOfSingleImage: UIScrollView!
@@ -24,13 +26,10 @@ final class SingleImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        singleImage.image = image
-        guard let unwrappedImage = singleImage.image else { return }
-        singleImage.frame.size = unwrappedImage.size
+        setFullSizeImage()
         scrollViewOfSingleImage.minimumZoomScale = 0.1
         scrollViewOfSingleImage.maximumZoomScale = 1.25
         
-        rescaleAndCenterImageInScrollView(image: unwrappedImage)
         scrollViewDidZoom(scrollViewOfSingleImage)
     }
     
@@ -69,12 +68,38 @@ final class SingleImageViewController: UIViewController {
             right: horizontalInset
         )
     }
+    
+    private func setFullSizeImage() {
+        UIBlockingProgressHUD.show()
+        singleImage.kf.setImage(with: URL(string: largeImageURL)) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self = self else { return }
+            switch result {
+            case .success(let imageResult):
+                singleImage.frame.size = imageResult.image.size
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+            case .failure:
+                self.showError()
+                print("Error")
+            }
+        }
+    }
+    
+    private func showError() {
+        let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось войти в систему", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "ОК", style: .default, handler: nil)
+        
+        alert.addAction(okAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
     // MARK: - IBActions
     
     @IBAction func didTapBackButton(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
-    //новое
+    
     @IBAction func didTapShareButton(_ sender: Any) {
         guard let image else { return }
         let share = UIActivityViewController(
@@ -84,7 +109,6 @@ final class SingleImageViewController: UIViewController {
         present(share, animated: true, completion: nil)
     }
 }
-
 
 // MARK: - SingleImageViewController Extensions
 
