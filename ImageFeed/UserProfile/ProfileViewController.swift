@@ -1,8 +1,9 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "UserPhoto"))
@@ -47,26 +48,46 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
-    //MARK: - LifeCycle
+    private let profileService = ProfileService.shared
+    private let tokenStorage = OAuth2TokenStorage.shared
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
+    // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let profile = profileService.profile {
+            updateProfileDetails(with: profile)
+        }
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        
+        updateAvatar()
         
         setupProfileViews()
         setupProfileConstraints()
     }
     
-    //MARK: - Setup Views
+    // MARK: - Setup ViewController Apperance
     
     private func setupProfileViews() {
+        view.backgroundColor = UIColor(named: "YP Black")
         view.addSubview(profileImageView)
         view.addSubview(nameLabel)
         view.addSubview(nicknameLabel)
         view.addSubview(descriptionLabel)
         view.addSubview(logoutButton)
     }
-    
-    //MARK: - Setup Constraints
     
     private func setupProfileConstraints() {
         profileImageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
@@ -87,7 +108,55 @@ final class ProfileViewController: UIViewController {
         logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
     }
     
-    //MARK: - Actions
+    // MARK: - Setup Methods
+    
+    private func updateProfileDetails(with profile: Profile) {
+        nameLabel.text = profile.name.isEmpty ? "Имя не указано" : profile.name
+        nicknameLabel.text = profile.loginName.isEmpty ? "@неизвестный_пользователь" : profile.loginName
+        descriptionLabel.text = (profile.bio?.isEmpty ?? true) ? "Профиль не заполнен" : profile.bio
+    }
+    
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else {
+            print("‼️[ProfileViewController/updateAvatar]: Guard for image URL failed! URL is nil.")
+            return
+        }
+        
+        let placeholderImage = UIImage(systemName: "person.circle.fill")?
+            .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
+            .withConfiguration(UIImage.SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        profileImageView.kf.indicatorType = .activity
+        profileImageView.kf.setImage(
+            with: url,
+            placeholder: placeholderImage,
+            options: [
+                .processor(processor),
+                .scaleFactor(UIScreen.main.scale),
+                .cacheOriginalImage,
+                .forceRefresh
+            ]) { result in
+                
+                switch result {
+                case .success(let value):
+                    print(value.image)
+                    print(value.cacheType)
+                    
+                    // Информация об источнике.
+                    print(value.source)
+                    
+                    // В случае ошибки
+                case .failure(let error):
+                    print(error)
+                }
+            }
+    }
+    
+    // MARK: - Actions
     
     @objc private func logoutButtonTapped() {
         print("Logout button tapped!")

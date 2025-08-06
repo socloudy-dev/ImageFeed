@@ -11,50 +11,41 @@ enum WebViewConstants {
 }
 
 final class WebViewViewController: UIViewController {
-    //MARK: - Properties
+    // MARK: - Properties
     
     weak var delegate: WebViewViewControllerDelegate?
     
-    //MARK: - IBOutlets
+    private var estimatedProgressObservation: NSKeyValueObservation?
+    
+    // MARK: - IBOutlets
     
     @IBOutlet weak var webView: WKWebView!
     @IBOutlet weak var progressView: UIProgressView!
     
-    //MARK: - Lifecycle
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         webView.navigationDelegate = self
         
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self = self else { return }
+                 self.updateProgress()
+             })
+        
         loadAuthView()
         updateProgress()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        webView.addObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            options: .new,
-            context: nil)
-        updateProgress()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        webView.removeObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            context: nil)
-    }
-    //MARK: - Setup Methods
+    // MARK: - Setup Methods
     
     private func loadAuthView() {
         guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-            print("‼️ URL components error (loadAuthView)")
+            print("‼️[WebViewViewController/loadAuthView]: URL components error (loadAuthView)")
             return
         }
         
@@ -66,25 +57,12 @@ final class WebViewViewController: UIViewController {
         ]
         
         guard let url = urlComponents.url else {
-            print("‼️ URL error (loadAuthView)")
+            print("‼️[WebViewViewController/loadAuthView]: URL error (loadAuthView)")
             return
         }
         
         let request = URLRequest(url: url)
         webView.load(request)
-    }
-    
-    override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?,
-        context: UnsafeMutableRawPointer?
-    ) {
-        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
     }
     
     private func updateProgress() {
@@ -93,7 +71,7 @@ final class WebViewViewController: UIViewController {
     }
 }
 
-//MARK: - WebViewViewController Extensions
+// MARK: - WebViewViewController Extensions
 
 extension WebViewViewController: WKNavigationDelegate {
     func webView(
