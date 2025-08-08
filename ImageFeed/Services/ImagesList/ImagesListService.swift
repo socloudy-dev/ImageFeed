@@ -1,15 +1,4 @@
-import UIKit
 import Foundation
-
-struct Photo {
-    let id: String
-    let size: CGSize
-    let createdAt: Date?
-    let welcomeDescription: String?
-    let thumbImageURL: String
-    let largeImageURL: String
-    let isLiked: Bool
-}
 
 enum ImagesListServiceError: Error {
     case invalidRequest
@@ -51,16 +40,7 @@ final class ImagesListService {
             switch result {
             case .success(let result):
                 
-                let nextPagePhotos = result.map { result -> Photo in
-                    let size = CGSize(width: result.width, height: result.height)
-                    return Photo(id: result.id,
-                                 size: size,
-                                 createdAt: result.createdAt ?? Date(),
-                                 welcomeDescription: result.description,
-                                 thumbImageURL: result.urls.regular,
-                                 largeImageURL: result.urls.full,
-                                 isLiked: result.likedByUser)
-                }
+                let nextPagePhotos = result.map { Photo(from: $0) }
                 
                 let uniquePhotos = nextPagePhotos.filter { newPhoto in
                     !self.photos.contains(where: { $0.id == newPhoto.id })

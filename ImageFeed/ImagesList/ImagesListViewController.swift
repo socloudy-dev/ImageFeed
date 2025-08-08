@@ -160,14 +160,14 @@ extension ImagesListViewController: ImagesListCellDelegate {
         
         UIBlockingProgressHUD.show()
         imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+            defer { UIBlockingProgressHUD.dismiss() }
+            
             switch result {
             case .success:
                 self.photos = self.imagesListService.photos
                 cell.setIsLiked(self.photos[indexPath.row].isLiked)
-                UIBlockingProgressHUD.dismiss()
                 print("✅[ImagesListViewController/imageListCellDidTapLike]: Like state is changed!")
             case .failure:
-                UIBlockingProgressHUD.dismiss()
                 print("‼️[ImagesListViewController/imageListCellDidTapLike]: Error when change like state")
             }
         }

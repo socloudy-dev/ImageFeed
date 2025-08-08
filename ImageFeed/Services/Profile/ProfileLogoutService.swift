@@ -14,7 +14,7 @@ final class ProfileLogoutService {
     
     private let tokenStorage = OAuth2TokenStorage.shared
     
-    func logout() {
+    func logout(completion: @escaping () -> Void) {
         UIBlockingProgressHUD.show()
         cleanCookies()
         tokenStorage.token = nil
@@ -23,7 +23,6 @@ final class ProfileLogoutService {
         imagesListService.clearImagesList()
         KingfisherManager.shared.cache.clearMemoryCache()
         KingfisherManager.shared.cache.clearDiskCache()
-        navigateToSplashScreen()
     }
     
     private func cleanCookies() {
@@ -32,18 +31,6 @@ final class ProfileLogoutService {
             records.forEach { record in
                 WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
             }
-        }
-    }
-    
-    private func navigateToSplashScreen() {
-        DispatchQueue.main.async {
-            guard let window = UIApplication.shared.windows.first else {
-                print("‼️[ProfileLogoutService/navigateToSplashScreen]: Error when getting main window")
-                return
-            }
-            let initialViewController = SplashViewController()
-            window.rootViewController = initialViewController
-            window.makeKeyAndVisible()
         }
     }
 }
