@@ -18,7 +18,7 @@ final class ProfileImageService {
     // MARK: - Setup Methods
     
     private func makeProfileImageRequest(username: String, token: String) -> URLRequest? {
-        guard let url = URL(string: "https://api.unsplash.com/users/\(username)") else {
+        guard let url = URL(string: "\(Constants.defaultBaseURLString)users/\(username)") else {
             return nil
         }
         
@@ -61,7 +61,7 @@ final class ProfileImageService {
         task.resume()
     }
     
-    func postNotification(with profileImageURL: String) {
+    private func postNotification(with profileImageURL: String) {
         NotificationCenter.default
             .post(
                 name: ProfileImageService.didChangeNotification,
@@ -69,5 +69,9 @@ final class ProfileImageService {
                 userInfo: ["URL": profileImageURL])
         
         print("📤[ProfileImageService/postNotification]: Notification posted.")
+    }
+    
+    func clearAvatarURL() {
+        avatarURL = nil
     }
 }

@@ -50,6 +50,7 @@ final class ProfileViewController: UIViewController {
     
     private let profileService = ProfileService.shared
     private let tokenStorage = OAuth2TokenStorage.shared
+    private let profileLogoutService = ProfileLogoutService.shared
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
@@ -145,20 +146,46 @@ final class ProfileViewController: UIViewController {
                 case .success(let value):
                     print(value.image)
                     print(value.cacheType)
-                    
-                    // Информация об источнике.
                     print(value.source)
                     
-                    // В случае ошибки
                 case .failure(let error):
                     print(error)
                 }
             }
     }
     
+    private func logoutAlert() {
+        let alert = UIAlertController(title: "Пока, Пока!", message: "Уверены что хотите выйти?", preferredStyle: .alert)
+        
+        let yesAction = UIAlertAction(title: "Да", style: .cancel) { _ in
+            self.profileLogoutService.logout() { [weak self] in
+                UIBlockingProgressHUD.dismiss()
+                self?.navigateToSplashScreen()
+            }
+        }
+        let noAction = UIAlertAction(title: "Нет", style: .default, handler: nil)
+        
+        alert.addAction(yesAction)
+        alert.addAction(noAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func navigateToSplashScreen() {
+            DispatchQueue.main.async {
+                guard let window = UIApplication.shared.windows.first else {
+                    print("‼️[ProfileLogoutService/navigateToSplashScreen]: Error when getting main window")
+                    return
+                }
+                let initialViewController = SplashViewController()
+                window.rootViewController = initialViewController
+                window.makeKeyAndVisible()
+            }
+        }
     // MARK: - Actions
     
     @objc private func logoutButtonTapped() {
+        logoutAlert()
         print("Logout button tapped!")
     }
 }

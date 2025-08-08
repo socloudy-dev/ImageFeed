@@ -101,7 +101,6 @@ extension SplashViewController: AuthViewControllerDelegate {
                 
             case let .failure(error):
                 print("‼️[SplashViewController/fetchProfile]: Error when called fetchProfile function: \(error)")
-                //self.switchToTabBarController()
                 break
             }
         }
