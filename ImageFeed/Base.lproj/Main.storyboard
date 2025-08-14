@@ -166,15 +166,15 @@
             </objects>
             <point key="canvasLocation" x="770" y="-1075"/>
         </scene>
-        <!--WebViewViewController-->
+        <!--Web View View Controller-->
         <scene sceneID="7r4-3f-OSx">
             <objects>
-                <viewController id="52F-To-rMZ" userLabel="WebViewViewController" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="52F-To-rMZ" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="lcj-ef-Kd7">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <wkWebView contentMode="scaleToFill" restorationIdentifier="UnsplashWebView" translatesAutoresizingMaskIntoConstraints="NO" id="Uuc-CC-ZN6" userLabel="UnsplashWebView">
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uuc-CC-ZN6">
                                 <rect key="frame" x="0.0" y="144" width="375" height="668"/>
                                 <color key="backgroundColor" name="YP White"/>
                                 <wkWebViewConfiguration key="configuration">
@@ -203,6 +203,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="hdY-ZR-xBv"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="WebViewViewController"/>
+                    </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="progressView" destination="tUn-BG-nfN" id="DgY-ff-ACd"/>
                         <outlet property="webView" destination="Uuc-CC-ZN6" id="9oC-Xf-25O"/>
